@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { brand } from "@/lib/content";
+import { useTheme } from "@/components/ThemeProvider";
 
 // the WebGL scene never renders on the server
 const HeroScene = dynamic(() => import("./HeroScene"), {
@@ -16,10 +17,7 @@ function SceneFallback() {
     <div
       aria-hidden
       className="absolute inset-0"
-      style={{
-        background:
-          "radial-gradient(80% 60% at 50% 75%, rgba(255,46,151,0.25), transparent 60%), radial-gradient(60% 40% at 50% 55%, rgba(34,224,255,0.18), transparent 70%)",
-      }}
+      style={{ background: "var(--hero-fallback)" }}
     />
   );
 }
@@ -49,6 +47,7 @@ function useTypewriter(text: string, speed = 70, start = true) {
 
 export default function Hero() {
   const typed = useTypewriter(brand.wordmark, 65);
+  const { theme } = useTheme();
 
   return (
     <section
@@ -57,17 +56,14 @@ export default function Hero() {
     >
       {/* 3D layer */}
       <div className="absolute inset-0">
-        <HeroScene />
+        <HeroScene theme={theme} />
       </div>
 
       {/* readability gradient between scene and text */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(70% 50% at 50% 42%, rgba(11,7,16,0.55), transparent 70%)",
-        }}
+        style={{ background: "var(--hero-veil)" }}
       />
 
       {/* overlay copy */}

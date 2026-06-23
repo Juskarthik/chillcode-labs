@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/assets/Icons";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { brand } from "@/lib/content";
 
 export default function Header() {
@@ -47,13 +48,16 @@ export default function Header() {
           </a>
         </nav>
 
-        <a
-          href="#transmit"
-          className="rounded-full bg-magenta/90 px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-void transition-transform hover:scale-105"
-          style={{ boxShadow: "0 0 18px var(--glow-magenta)" }}
-        >
-          say hi
-        </a>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <a
+            href="#transmit"
+            className="rounded-full bg-magenta/90 px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-void transition-transform hover:scale-105"
+            style={{ boxShadow: "0 0 18px var(--glow-magenta)" }}
+          >
+            say hi
+          </a>
+        </div>
       </div>
     </header>
   );
