@@ -33,6 +33,65 @@
   --glow-magenta: rgba(255, 46, 151, 0.55);
   --glow-cyan: rgba(34, 224, 255, 0.45);
   --glow-amber: rgba(255, 180, 84, 0.5);
+
+  /* theme-aware hero treatments (dark default) */
+  --hero-veil: radial-gradient(
+    70% 50% at 50% 42%,
+    rgba(11, 7, 16, 0.55),
+    transparent 70%
+  );
+  --hero-fallback: radial-gradient(
+      80% 60% at 50% 75%,
+      rgba(255, 46, 151, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(60% 40% at 50% 55%, rgba(34, 224, 255, 0.18), transparent 70%);
+}
+
+/* ============================================================
+   Light mode — warm "daytime" variant. Same hierarchy & accents
+   as dark, retuned for legibility on a warm-paper background.
+   ============================================================ */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-void: #f5efe6; /* warm paper */
+  --bg-deep: #efe7da;
+  --bg-elev: #fffaf2; /* cards lift lighter than the page */
+  --bg-elev-2: #ffffff;
+
+  /* accents darkened just enough to read as text on paper,
+     while still vivid as button / icon fills */
+  --neon-magenta: #cc1268;
+  --neon-pink: #e0408f;
+  --neon-cyan: #077589; /* darkened so small cyan labels stay legible */
+  --neon-violet: #7136e0;
+
+  --warm-amber: #ad5f17; /* darkened for legible amber tags / metrics */
+  --warm-gold: #9c6e07;
+  --warm-coral: #d24a2d;
+
+  --text-soft: #1c1326; /* near-black plum */
+  --text-muted: #564b66;
+  --text-faint: #6f6388; /* darker than before for small captions */
+
+  --line: rgba(28, 19, 38, 0.12);
+  --line-strong: rgba(28, 19, 38, 0.22);
+  --glow-magenta: rgba(210, 21, 111, 0.35);
+  --glow-cyan: rgba(10, 138, 168, 0.3);
+  --glow-amber: rgba(194, 112, 31, 0.32);
+
+  --hero-veil: radial-gradient(
+    72% 55% at 50% 42%,
+    rgba(245, 239, 230, 0.78),
+    transparent 72%
+  );
+  --hero-fallback: radial-gradient(
+      80% 60% at 50% 75%,
+      rgba(210, 21, 111, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(60% 40% at 50% 55%, rgba(10, 138, 168, 0.1), transparent 70%);
 }
 
 @theme inline {
@@ -169,6 +228,24 @@ body {
       transparent 60%
     );
   background-attachment: fixed;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+
+:root[data-theme="light"] body {
+  background-image:
+    radial-gradient(
+      120% 80% at 80% -10%,
+      rgba(210, 21, 111, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(90% 70% at 0% 5%, rgba(10, 138, 168, 0.06), transparent 55%),
+    radial-gradient(
+      120% 120% at 50% 120%,
+      rgba(194, 112, 31, 0.12),
+      transparent 60%
+    );
 }
 
 ::selection {
@@ -224,6 +301,30 @@ body {
     transparent 55%,
     rgba(5, 2, 10, 0.7) 100%
   );
+}
+
+/* in light mode the CRT overlays are softened so they read as warmth,
+   not grime, and the dark vignette is replaced with a faint warm edge */
+:root[data-theme="light"] .fx-scanlines {
+  opacity: 0.05;
+}
+:root[data-theme="light"] .fx-grain {
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+}
+:root[data-theme="light"] .fx-vignette {
+  background: radial-gradient(
+    120% 120% at 50% 50%,
+    transparent 62%,
+    rgba(150, 110, 70, 0.12) 100%
+  );
+}
+
+/* neon text-glow halos don't help dark text on a light page */
+:root[data-theme="light"] .text-glow-magenta,
+:root[data-theme="light"] .text-glow-cyan,
+:root[data-theme="light"] .text-glow-amber {
+  text-shadow: none;
 }
 
 /* ---- reusable utility helpers ---- */

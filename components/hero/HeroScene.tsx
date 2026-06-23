@@ -1,10 +1,58 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
 import { shaderMaterial } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
+import type { Theme } from "@/components/ThemeProvider";
+
+/* ------------------------------------------------------------------
+   Theme palettes — the scene has a "warm night" (dark) and a
+   "warm sunrise" (light) variant tuned for contrast on each page bg.
+------------------------------------------------------------------ */
+type ScenePalette = {
+  bg: string;
+  gridNear: string;
+  gridFar: string;
+  gridGlow: string;
+  gridIntensity: number;
+  coreOuter: string;
+  coreInner: string;
+  coreCenter: string;
+  particle: string;
+  particleOpacity: number;
+  bloom: number;
+};
+
+const PALETTES: Record<Theme, ScenePalette> = {
+  dark: {
+    bg: "#0b0710",
+    gridNear: "#ff2e97",
+    gridFar: "#22e0ff",
+    gridGlow: "#ffb454",
+    gridIntensity: 1.0,
+    coreOuter: "#ff2e97",
+    coreInner: "#22e0ff",
+    coreCenter: "#ffd166",
+    particle: "#ffd9a8",
+    particleOpacity: 0.7,
+    bloom: 1.25,
+  },
+  light: {
+    bg: "#f5efe6",
+    gridNear: "#d2156f",
+    gridFar: "#0a8aa8",
+    gridGlow: "#e0822f",
+    gridIntensity: 0.32,
+    coreOuter: "#d2156f",
+    coreInner: "#0a8aa8",
+    coreCenter: "#c2701f",
+    particle: "#9a6a3a",
+    particleOpacity: 0.6,
+    bloom: 0, // a light scene blooms to white; rely on color contrast
+  },
+};
 
 /* ------------------------------------------------------------------
    Synthwave grid floor — a custom shader plane with scrolling neon
@@ -13,6 +61,7 @@ import * as THREE from "three";
 const GridMaterial = shaderMaterial(
   {
     uTime: 0,
+    uIntensity: 1.0,
     uColorNear: new THREE.Color("#ff2e97"),
     uColorFar: new THREE.Color("#22e0ff"),
     uGlow: new THREE.Color("#ffb454"),
@@ -30,6 +79,7 @@ const GridMaterial = shaderMaterial(
     precision mediump float;
     varying vec2 vUv;
     uniform float uTime;
+    uniform float uIntensity;
     uniform vec3 uColorNear;
     uniform vec3 uColorFar;
     uniform vec3 uGlow;
@@ -55,11 +105,11 @@ const GridMaterial = shaderMaterial(
       float a = grid * horizonFade * nearFade;
 
       vec3 col = mix(uColorNear, uColorFar, depth);
-      col += uGlow * pow(grid, 2.0) * 0.4;
+      col += uGlow * pow(grid, 2.0) * 0.4 * uIntensity;
 
       // glow halo near horizon line
       float halo = smoothstep(0.62, 0.5, depth) * smoothstep(0.42, 0.5, depth);
-      col += uGlow * halo * 2.2;
+      col += uGlow * halo * 2.2 * uIntensity;
       a += halo * 0.5;
 
       gl_FragColor = vec4(col, a);
@@ -68,11 +118,31 @@ const GridMaterial = shaderMaterial(
 );
 extend({ GridMaterial });
 
-function GridFloor() {
-  const mat = useRef<THREE.ShaderMaterial & { uTime: number }>(null);
+type GridUniforms = THREE.ShaderMaterial & {
+  uTime: number;
+  uIntensity: number;
+  uColorNear: THREE.Color;
+  uColorFar: THREE.Color;
+  uGlow: THREE.Color;
+};
+
+function GridFloor({ palette }: { palette: ScenePalette }) {
+  const mat = useRef<GridUniforms>(null);
+
+  // re-apply colors / intensity whenever the theme palette changes
+  useEffect(() => {
+    const m = mat.current;
+    if (!m) return;
+    m.uColorNear.set(palette.gridNear);
+    m.uColorFar.set(palette.gridFar);
+    m.uGlow.set(palette.gridGlow);
+    m.uIntensity = palette.gridIntensity;
+  }, [palette]);
+
   useFrame((_, delta) => {
     if (mat.current) mat.current.uTime += delta;
   });
+
   return (
     <mesh rotation={[-Math.PI / 2.05, 0, 0]} position={[0, -2.2, 0]}>
       <planeGeometry args={[60, 60, 1, 1]} />
@@ -84,7 +154,13 @@ function GridFloor() {
 /* ------------------------------------------------------------------
    Floating wireframe core — the "idea" suspended above the grid.
 ------------------------------------------------------------------ */
-function FloatingCore({ pointer }: { pointer: React.RefObject<THREE.Vector2> }) {
+function FloatingCore({
+  pointer,
+  palette,
+}: {
+  pointer: React.RefObject<THREE.Vector2>;
+  palette: ScenePalette;
+}) {
   const group = useRef<THREE.Group>(null);
   const inner = useRef<THREE.Mesh>(null);
 
@@ -114,15 +190,25 @@ function FloatingCore({ pointer }: { pointer: React.RefObject<THREE.Vector2> }) 
     <group ref={group} position={[0, 0.4, 0]}>
       <mesh>
         <icosahedronGeometry args={[1.5, 1]} />
-        <meshBasicMaterial color="#ff2e97" wireframe transparent opacity={0.9} />
+        <meshBasicMaterial
+          color={palette.coreOuter}
+          wireframe
+          transparent
+          opacity={0.9}
+        />
       </mesh>
       <mesh ref={inner} scale={0.62}>
         <icosahedronGeometry args={[1.5, 0]} />
-        <meshBasicMaterial color="#22e0ff" wireframe transparent opacity={0.55} />
+        <meshBasicMaterial
+          color={palette.coreInner}
+          wireframe
+          transparent
+          opacity={0.55}
+        />
       </mesh>
       <mesh scale={0.22}>
         <icosahedronGeometry args={[1.5, 0]} />
-        <meshBasicMaterial color="#ffd166" />
+        <meshBasicMaterial color={palette.coreCenter} />
       </mesh>
     </group>
   );
@@ -131,7 +217,13 @@ function FloatingCore({ pointer }: { pointer: React.RefObject<THREE.Vector2> }) 
 /* ------------------------------------------------------------------
    Drifting dust particles.
 ------------------------------------------------------------------ */
-function Particles({ count = 220 }: { count?: number }) {
+function Particles({
+  palette,
+  count = 220,
+}: {
+  palette: ScenePalette;
+  count?: number;
+}) {
   const points = useRef<THREE.Points>(null);
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
@@ -154,20 +246,30 @@ function Particles({ count = 220 }: { count?: number }) {
   return (
     <points ref={points}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.045}
-        color="#ffd9a8"
+        color={palette.particle}
         transparent
-        opacity={0.7}
+        opacity={palette.particleOpacity}
         sizeAttenuation
       />
     </points>
   );
+}
+
+/* ------------------------------------------------------------------
+   Imperatively keeps scene background + fog in sync with the theme.
+------------------------------------------------------------------ */
+function SceneEnv({ bg }: { bg: string }) {
+  const { scene } = useThree();
+  useEffect(() => {
+    const c = new THREE.Color(bg);
+    scene.background = c;
+    scene.fog = new THREE.Fog(c, 8, 22);
+  }, [scene, bg]);
+  return null;
 }
 
 /* ------------------------------------------------------------------
@@ -189,8 +291,9 @@ function Rig({ pointer }: { pointer: React.RefObject<THREE.Vector2> }) {
   return null;
 }
 
-export default function HeroScene() {
+export default function HeroScene({ theme = "dark" }: { theme?: Theme }) {
   const pointer = useRef(new THREE.Vector2(0, 0));
+  const palette = PALETTES[theme];
 
   return (
     <Canvas
@@ -204,21 +307,22 @@ export default function HeroScene() {
       }}
       style={{ position: "absolute", inset: 0 }}
     >
-      <color attach="background" args={["#0b0710"]} />
-      <fog attach="fog" args={["#0b0710", 8, 22]} />
-      <GridFloor />
-      <FloatingCore pointer={pointer} />
-      <Particles />
+      <SceneEnv bg={palette.bg} />
+      <GridFloor palette={palette} />
+      <FloatingCore pointer={pointer} palette={palette} />
+      <Particles palette={palette} />
       <Rig pointer={pointer} />
-      <EffectComposer>
-        <Bloom
-          intensity={1.25}
-          luminanceThreshold={0.18}
-          luminanceSmoothing={0.9}
-          mipmapBlur
-        />
-        <Vignette eskil={false} offset={0.2} darkness={0.85} />
-      </EffectComposer>
+      {palette.bloom > 0 ? (
+        <EffectComposer>
+          <Bloom
+            intensity={palette.bloom}
+            luminanceThreshold={0.18}
+            luminanceSmoothing={0.9}
+            mipmapBlur
+          />
+          <Vignette eskil={false} offset={0.2} darkness={0.85} />
+        </EffectComposer>
+      ) : null}
     </Canvas>
   );
 }

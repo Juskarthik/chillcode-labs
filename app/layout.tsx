@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
 
 const display = Space_Grotesk({
   variable: "--font-display",
@@ -41,14 +42,27 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="dark"
+      suppressHydrationWarning
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
+      <head>
+        {/* runs before paint to set data-theme from storage / system,
+            avoiding a flash of the wrong theme. Executes from the SSR'd
+            HTML; the dev-only React notice about client re-render is benign. */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+        />
+      </head>
       <body>
-        <SmoothScroll>{children}</SmoothScroll>
-        {/* atmospheric overlays */}
-        <div className="fx-vignette" aria-hidden />
-        <div className="fx-scanlines" aria-hidden />
-        <div className="fx-grain" aria-hidden />
+        <ThemeProvider>
+          <SmoothScroll>{children}</SmoothScroll>
+          {/* atmospheric overlays */}
+          <div className="fx-vignette" aria-hidden />
+          <div className="fx-scanlines" aria-hidden />
+          <div className="fx-grain" aria-hidden />
+        </ThemeProvider>
       </body>
     </html>
   );
