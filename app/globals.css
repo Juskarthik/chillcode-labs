@@ -35,9 +35,10 @@
 
   /* theme-aware hero treatments (dark default) */
   --hero-veil: radial-gradient(
-    70% 50% at 50% 42%,
-    rgba(5, 5, 5, 0.55),
-    transparent 70%
+    80% 65% at 50% 40%,
+    rgba(5, 5, 5, 0.82),
+    rgba(5, 5, 5, 0.4) 55%,
+    transparent 85%
   );
   --hero-fallback: radial-gradient(
       80% 60% at 50% 75%,
@@ -81,9 +82,10 @@
   --glow-amber: rgba(0, 0, 0, 0.2);
 
   --hero-veil: radial-gradient(
-    72% 55% at 50% 42%,
-    rgba(250, 250, 250, 0.78),
-    transparent 72%
+    80% 65% at 50% 40%,
+    rgba(250, 250, 250, 0.92),
+    rgba(250, 250, 250, 0.55) 55%,
+    transparent 85%
   );
   --hero-fallback: radial-gradient(
       80% 60% at 50% 75%,
