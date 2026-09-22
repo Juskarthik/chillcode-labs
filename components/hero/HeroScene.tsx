@@ -8,9 +8,9 @@ import * as THREE from "three";
 import type { Theme } from "@/components/ThemeProvider";
 
 /* ------------------------------------------------------------------
-   Theme palettes — monochrome phosphor look. Dark mode reads as a
-   glowing white CRT scene (bloom does the heavy lifting); light
-   mode inverts to plain graphite ink with no bloom.
+   Theme palettes — electric-blue phosphor look. Dark mode reads as a
+   glowing blue CRT scene (bloom does the heavy lifting); light mode
+   inverts to deep electric-blue ink with no bloom.
 ------------------------------------------------------------------ */
 type ScenePalette = {
   bg: string;
@@ -28,28 +28,28 @@ type ScenePalette = {
 
 const PALETTES: Record<Theme, ScenePalette> = {
   dark: {
-    bg: "#050505",
-    gridNear: "#ffffff",
-    gridFar: "#c9c9c9",
-    gridGlow: "#ffffff",
+    bg: "#05070c",
+    gridNear: "#5b9cff",
+    gridFar: "#1f3f8c",
+    gridGlow: "#3d78ff",
     gridIntensity: 1.0,
-    coreOuter: "#ffffff",
-    coreInner: "#d6d6d6",
-    coreCenter: "#ffffff",
-    particle: "#e8e8e8",
+    coreOuter: "#5b9cff",
+    coreInner: "#2f6fff",
+    coreCenter: "#8fe3ff",
+    particle: "#9fc8ff",
     particleOpacity: 0.7,
     bloom: 1.25,
   },
   light: {
-    bg: "#fafafa",
-    gridNear: "#1a1a1a",
-    gridFar: "#4d4d4d",
-    gridGlow: "#000000",
+    bg: "#f7f9fd",
+    gridNear: "#1746d1",
+    gridFar: "#5578c9",
+    gridGlow: "#0b5ea3",
     gridIntensity: 0.32,
-    coreOuter: "#1a1a1a",
-    coreInner: "#4d4d4d",
-    coreCenter: "#000000",
-    particle: "#737373",
+    coreOuter: "#1746d1",
+    coreInner: "#5578c9",
+    coreCenter: "#0b2e99",
+    particle: "#5578c9",
     particleOpacity: 0.6,
     bloom: 0, // a light scene blooms to white; rely on contrast instead
   },
@@ -63,9 +63,9 @@ const GridMaterial = shaderMaterial(
   {
     uTime: 0,
     uIntensity: 1.0,
-    uColorNear: new THREE.Color("#ffffff"),
-    uColorFar: new THREE.Color("#c9c9c9"),
-    uGlow: new THREE.Color("#ffffff"),
+    uColorNear: new THREE.Color("#5b9cff"),
+    uColorFar: new THREE.Color("#1f3f8c"),
+    uGlow: new THREE.Color("#3d78ff"),
   },
   // vertex
   /* glsl */ `
