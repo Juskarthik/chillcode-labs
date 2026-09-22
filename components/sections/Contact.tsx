@@ -5,13 +5,13 @@ import { brand, contact } from "@/lib/content";
 export default function Contact() {
   return (
     <section id="transmit" className="story-section overflow-hidden">
-      {/* warm horizon glow */}
+      {/* phosphor horizon glow */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[60%]"
         style={{
           background:
-            "radial-gradient(70% 100% at 50% 120%, rgba(255,46,151,0.22), rgba(255,180,84,0.12) 40%, transparent 70%)",
+            "radial-gradient(70% 100% at 50% 120%, rgba(255,255,255,0.18), rgba(255,255,255,0.08) 40%, transparent 70%)",
         }}
       />
       <div className="mx-auto max-w-4xl px-6 text-center">
