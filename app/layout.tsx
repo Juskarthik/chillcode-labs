@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
@@ -48,10 +49,13 @@ export default function RootLayout({
     >
       <head>
         {/* runs before paint to set data-theme from storage / system,
-            avoiding a flash of the wrong theme. Executes from the SSR'd
-            HTML; the dev-only React notice about client re-render is benign. */}
-        <script
-          // eslint-disable-next-line react/no-danger
+            avoiding a flash of the wrong theme. next/script's
+            beforeInteractive strategy lets Next hoist and hydrate this
+            safely, instead of a raw <script> tag colliding with Next's
+            own injected scripts during hydration. */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
       </head>

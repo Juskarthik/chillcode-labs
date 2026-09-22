@@ -18,19 +18,20 @@ type ThemeCtx = {
 
 const Context = createContext<ThemeCtx | null>(null);
 
-/** Reads the theme the pre-paint script already committed to <html>. */
-function readInitialTheme(): Theme {
-  if (typeof document !== "undefined") {
-    const t = document.documentElement.dataset.theme;
-    if (t === "light" || t === "dark") return t;
-  }
-  return "dark";
-}
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // initialised from the DOM on the client so the first render matches
-  // what the no-FOUC script set; falls back to dark during SSR.
-  const [theme, setThemeState] = useState<Theme>(readInitialTheme);
+  // Always starts at "dark" to match the server-rendered markup (<html
+  // data-theme="dark"> in layout.tsx) — the pre-paint script already
+  // flips the DOM attribute for CSS purposes before this ever runs, but
+  // React's first client render must still agree with what was sent
+  // down from the server or hydration fails. Once mounted, we read the
+  // real value and correct state in an effect (a normal post-hydration
+  // update, not a mismatch).
+  const [theme, setThemeState] = useState<Theme>("dark");
+
+  useEffect(() => {
+    const t = document.documentElement.dataset.theme;
+    if (t === "light" || t === "dark") setThemeState(t);
+  }, []);
 
   // keep <html> + storage in sync whenever the theme changes
   useEffect(() => {
