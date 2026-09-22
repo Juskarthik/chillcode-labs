@@ -1,97 +1,96 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Chillcode Labs — warm cyberpunk design system
+   Chillcode Labs — phosphor monochrome design system
    ============================================================ */
 
 :root {
   /* surfaces */
-  --bg-void: #0b0710;
-  --bg-deep: #0e0a16;
-  --bg-elev: #14101e;
-  --bg-elev-2: #1b1528;
+  --bg-void: #050505;
+  --bg-deep: #0a0a0a;
+  --bg-elev: #121212;
+  --bg-elev-2: #1a1a1a;
 
-  /* neon */
-  --neon-magenta: #ff2e97;
-  --neon-pink: #ff5cae;
-  --neon-cyan: #22e0ff;
-  --neon-violet: #a55cff;
+  /* phosphor whites (stand in for the old neon accent slots) */
+  --neon-magenta: #ffffff;
+  --neon-pink: #f2f2f2;
+  --neon-cyan: #e6e6e6;
+  --neon-violet: #cfcfcf;
 
-  /* warmth */
-  --warm-amber: #ffb454;
-  --warm-gold: #ffd166;
-  --warm-coral: #ff7a59;
+  --warm-amber: #dcdcdc;
+  --warm-gold: #ffffff;
+  --warm-coral: #bdbdbd;
 
   /* text */
-  --text-soft: #ede7f6;
-  --text-muted: #a89cc0;
-  --text-faint: #6e6488;
+  --text-soft: #f5f5f5;
+  --text-muted: #a3a3a3;
+  --text-faint: #707070;
 
   /* lines / glow */
   --line: rgba(255, 255, 255, 0.08);
   --line-strong: rgba(255, 255, 255, 0.16);
-  --glow-magenta: rgba(255, 46, 151, 0.55);
-  --glow-cyan: rgba(34, 224, 255, 0.45);
-  --glow-amber: rgba(255, 180, 84, 0.5);
+  --glow-magenta: rgba(255, 255, 255, 0.55);
+  --glow-cyan: rgba(255, 255, 255, 0.4);
+  --glow-amber: rgba(255, 255, 255, 0.45);
 
   /* theme-aware hero treatments (dark default) */
   --hero-veil: radial-gradient(
     70% 50% at 50% 42%,
-    rgba(11, 7, 16, 0.55),
+    rgba(5, 5, 5, 0.55),
     transparent 70%
   );
   --hero-fallback: radial-gradient(
       80% 60% at 50% 75%,
-      rgba(255, 46, 151, 0.25),
+      rgba(255, 255, 255, 0.16),
       transparent 60%
     ),
-    radial-gradient(60% 40% at 50% 55%, rgba(34, 224, 255, 0.18), transparent 70%);
+    radial-gradient(60% 40% at 50% 55%, rgba(255, 255, 255, 0.1), transparent 70%);
 }
 
 /* ============================================================
-   Light mode — warm "daytime" variant. Same hierarchy & accents
-   as dark, retuned for legibility on a warm-paper background.
+   Light mode — plain ink-on-paper variant. Same hierarchy as
+   dark, inverted to black-on-white with the glow turned off
+   (phosphor glow only reads on a dark screen).
    ============================================================ */
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --bg-void: #f5efe6; /* warm paper */
-  --bg-deep: #efe7da;
-  --bg-elev: #fffaf2; /* cards lift lighter than the page */
+  --bg-void: #fafafa;
+  --bg-deep: #f0f0f0;
+  --bg-elev: #ffffff;
   --bg-elev-2: #ffffff;
 
-  /* accents darkened just enough to read as text on paper,
-     while still vivid as button / icon fills */
-  --neon-magenta: #cc1268;
-  --neon-pink: #e0408f;
-  --neon-cyan: #077589; /* darkened so small cyan labels stay legible */
-  --neon-violet: #7136e0;
+  /* accents darkened to read as ink on paper */
+  --neon-magenta: #000000;
+  --neon-pink: #171717;
+  --neon-cyan: #262626;
+  --neon-violet: #333333;
 
-  --warm-amber: #ad5f17; /* darkened for legible amber tags / metrics */
-  --warm-gold: #9c6e07;
-  --warm-coral: #d24a2d;
+  --warm-amber: #1a1a1a;
+  --warm-gold: #000000;
+  --warm-coral: #404040;
 
-  --text-soft: #1c1326; /* near-black plum */
-  --text-muted: #564b66;
-  --text-faint: #6f6388; /* darker than before for small captions */
+  --text-soft: #0a0a0a;
+  --text-muted: #525252;
+  --text-faint: #737373;
 
-  --line: rgba(28, 19, 38, 0.12);
-  --line-strong: rgba(28, 19, 38, 0.22);
-  --glow-magenta: rgba(210, 21, 111, 0.35);
-  --glow-cyan: rgba(10, 138, 168, 0.3);
-  --glow-amber: rgba(194, 112, 31, 0.32);
+  --line: rgba(0, 0, 0, 0.12);
+  --line-strong: rgba(0, 0, 0, 0.22);
+  --glow-magenta: rgba(0, 0, 0, 0.25);
+  --glow-cyan: rgba(0, 0, 0, 0.18);
+  --glow-amber: rgba(0, 0, 0, 0.2);
 
   --hero-veil: radial-gradient(
     72% 55% at 50% 42%,
-    rgba(245, 239, 230, 0.78),
+    rgba(250, 250, 250, 0.78),
     transparent 72%
   );
   --hero-fallback: radial-gradient(
       80% 60% at 50% 75%,
-      rgba(210, 21, 111, 0.12),
+      rgba(0, 0, 0, 0.08),
       transparent 60%
     ),
-    radial-gradient(60% 40% at 50% 55%, rgba(10, 138, 168, 0.1), transparent 70%);
+    radial-gradient(60% 40% at 50% 55%, rgba(0, 0, 0, 0.06), transparent 70%);
 }
 
 @theme inline {
@@ -210,21 +209,21 @@ body {
   font-family: var(--font-body), system-ui, sans-serif;
   overflow-x: hidden;
   position: relative;
-  /* base atmospheric gradient wash */
+  /* base atmospheric phosphor wash — faint white glow, no color */
   background-image:
     radial-gradient(
       120% 80% at 80% -10%,
-      rgba(255, 46, 151, 0.14),
+      rgba(255, 255, 255, 0.08),
       transparent 60%
     ),
     radial-gradient(
       90% 70% at 0% 5%,
-      rgba(34, 224, 255, 0.1),
+      rgba(255, 255, 255, 0.06),
       transparent 55%
     ),
     radial-gradient(
       120% 120% at 50% 120%,
-      rgba(255, 180, 84, 0.1),
+      rgba(255, 255, 255, 0.05),
       transparent 60%
     );
   background-attachment: fixed;
@@ -237,20 +236,20 @@ body {
   background-image:
     radial-gradient(
       120% 80% at 80% -10%,
-      rgba(210, 21, 111, 0.08),
+      rgba(0, 0, 0, 0.05),
       transparent 60%
     ),
-    radial-gradient(90% 70% at 0% 5%, rgba(10, 138, 168, 0.06), transparent 55%),
+    radial-gradient(90% 70% at 0% 5%, rgba(0, 0, 0, 0.04), transparent 55%),
     radial-gradient(
       120% 120% at 50% 120%,
-      rgba(194, 112, 31, 0.12),
+      rgba(0, 0, 0, 0.05),
       transparent 60%
     );
 }
 
 ::selection {
   background: var(--neon-magenta);
-  color: #0b0710;
+  color: var(--bg-void);
 }
 
 /* custom neon scrollbar */
@@ -299,12 +298,12 @@ body {
   background: radial-gradient(
     120% 120% at 50% 50%,
     transparent 55%,
-    rgba(5, 2, 10, 0.7) 100%
+    rgba(0, 0, 0, 0.7) 100%
   );
 }
 
-/* in light mode the CRT overlays are softened so they read as warmth,
-   not grime, and the dark vignette is replaced with a faint warm edge */
+/* in light mode the CRT overlays are softened so they read as a faint
+   grayscale edge rather than grime, and the dark vignette lightens */
 :root[data-theme="light"] .fx-scanlines {
   opacity: 0.05;
 }
@@ -316,7 +315,7 @@ body {
   background: radial-gradient(
     120% 120% at 50% 50%,
     transparent 62%,
-    rgba(150, 110, 70, 0.12) 100%
+    rgba(0, 0, 0, 0.1) 100%
   );
 }
 
@@ -328,20 +327,21 @@ body {
 }
 
 /* ---- reusable utility helpers ---- */
+/* phosphor bloom: a tight bright core plus a wide soft halo, all white */
 .text-glow-magenta {
   text-shadow:
     0 0 8px var(--glow-magenta),
-    0 0 26px rgba(255, 46, 151, 0.35);
+    0 0 26px rgba(255, 255, 255, 0.35);
 }
 .text-glow-cyan {
   text-shadow:
     0 0 8px var(--glow-cyan),
-    0 0 26px rgba(34, 224, 255, 0.3);
+    0 0 26px rgba(255, 255, 255, 0.3);
 }
 .text-glow-amber {
   text-shadow:
     0 0 8px var(--glow-amber),
-    0 0 26px rgba(255, 180, 84, 0.3);
+    0 0 26px rgba(255, 255, 255, 0.3);
 }
 
 .gradient-text {

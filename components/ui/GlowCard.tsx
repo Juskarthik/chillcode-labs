@@ -6,7 +6,7 @@ const glowByAccent: Record<string, string> = {
   magenta: "var(--glow-magenta)",
   cyan: "var(--glow-cyan)",
   amber: "var(--glow-amber)",
-  violet: "rgba(165,92,255,0.5)",
+  violet: "rgba(255,255,255,0.4)",
 };
 
 /**
