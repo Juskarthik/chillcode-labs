@@ -396,4 +396,71 @@ body {
   .fx-grain {
     display: none;
   }
+  .footer-wordmark {
+    animation: none;
+  }
+}
+
+/* ---- footer wordmark: outlined lettering with a pointer-driven glow ---- */
+@property --mx {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --my {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+.footer-wordmark {
+  --mx: 50%;
+  --my: 50%;
+  height: clamp(3.2rem, 10.3vw, 8.4rem);
+  animation: wordmark-drift 9s ease-in-out infinite alternate;
+}
+/* pointer takes over from the idle drift */
+.footer-wordmark[data-active="true"] {
+  animation: none;
+}
+@keyframes wordmark-drift {
+  from {
+    --mx: 12%;
+    --my: 35%;
+  }
+  to {
+    --mx: 88%;
+    --my: 65%;
+  }
+}
+.footer-wordmark-text {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  font-size: clamp(2rem, 14.4vw, 11.6rem);
+}
+.footer-wordmark-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+.footer-wordmark-fill {
+  color: transparent;
+  background-image: radial-gradient(
+    380px circle at var(--mx) var(--my),
+    var(--neon-cyan),
+    var(--neon-magenta) 45%,
+    transparent 75%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.85;
+  transition: opacity 0.4s ease;
+}
+:root[data-theme="light"] .footer-wordmark-fill {
+  opacity: 0.6;
 }

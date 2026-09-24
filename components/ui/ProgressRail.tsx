@@ -10,6 +10,7 @@ import { chapters } from "@/lib/content";
 export default function ProgressRail() {
   const [active, setActive] = useState("boot");
   const [progress, setProgress] = useState(0);
+  const [footerInView, setFooterInView] = useState(false);
 
   useEffect(() => {
     const sections = chapters
@@ -26,6 +27,15 @@ export default function ProgressRail() {
     );
     sections.forEach((s) => observer.observe(s));
 
+    // the footer is the end of the story: tuck the rail away so it never
+    // overlaps the terminal card
+    const footer = document.querySelector("footer");
+    const footerObserver = new IntersectionObserver(
+      ([entry]) => setFooterInView(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    if (footer) footerObserver.observe(footer);
+
     const onScroll = () => {
       const h = document.documentElement;
       const max = h.scrollHeight - h.clientHeight;
@@ -36,6 +46,7 @@ export default function ProgressRail() {
 
     return () => {
       observer.disconnect();
+      footerObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
@@ -58,7 +69,9 @@ export default function ProgressRail() {
       {/* side chapter rail (hidden on small screens) */}
       <nav
         aria-label="Chapters"
-        className="fixed left-6 top-1/2 z-[60] hidden -translate-y-1/2 flex-col gap-4 lg:flex"
+        className={`fixed left-6 top-1/2 z-[60] hidden -translate-y-1/2 flex-col gap-4 transition-opacity duration-500 lg:flex ${
+          footerInView ? "pointer-events-none opacity-0" : "opacity-100"
+        }`}
       >
         {chapters.map((c) => {
           const on = active === c.id;
