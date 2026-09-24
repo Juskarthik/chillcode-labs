@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { setLenisInstance } from "@/lib/lenisController";
 
 /**
  * Lenis smooth-scroll provider. Disables itself when the user prefers
@@ -25,6 +26,8 @@ export default function SmoothScroll({
       touchMultiplier: 1.4,
     });
 
+    setLenisInstance(lenis);
+
     let raf = 0;
     const loop = (time: number) => {
       lenis.raf(time);
@@ -42,6 +45,7 @@ export default function SmoothScroll({
 
     return () => {
       cancelAnimationFrame(raf);
+      setLenisInstance(null);
       lenis.destroy();
     };
   }, []);
